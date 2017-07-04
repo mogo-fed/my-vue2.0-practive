@@ -15,7 +15,7 @@
 
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <el-input v-model="address" 
+          <el-input v-model="address"
             placeholder="请输入地址">
           </el-input>
         </div>
