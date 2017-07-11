@@ -1,7 +1,7 @@
 <template>
 	<div id="ConfigNote">
-		<el-collapse accordion>
-		  <el-collapse-item>
+		<el-collapse accordion v-model="activeNames">
+		  <el-collapse-item  name="1">
 		    <template slot="title">
 		      项目配置  <i class="header-icon el-icon-information"></i>
 		    </template>
@@ -32,20 +32,34 @@
 		  </el-collapse-item>
 		</el-collapse>
 	</div>
-</template>
 
+	
+
+</template>
 <script>
 	export default{
 		name:'ConfigNote',
 		data(){
 			return{
+				activeNames: ['1'],
 				textarea:''
 			}
 		},
 		methods:{
 			saveConfig(){
-				console.log(this.textarea);
-			}
+				this.$emit("changeConfig",{
+					"value":this.textarea
+				})
+				this.textarea=''
+				this.tooltipSucc()
+			},
+			tooltipSucc() {
+		        this.$notify({
+			        title: '添加配置成功',
+			        message: '请在选择项目中选择配置',
+			        type: 'success'
+			    });
+		    },
 		}
 	}
 </script>

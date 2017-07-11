@@ -1,19 +1,18 @@
 <template>
   <div class="record">
 
-    <el-row :gutter="24">
+    <el-row :gutter="24" class="animated bounceInUp">
       <el-col :span="4">
         <el-date-picker
           v-model="happenTime"
           type="date"
+          format="yyyy-MM-dd"
           placeholder="选择日期"
           :picker-options="pickerOptions">
         </el-date-picker>
       </el-col>
 
       <el-col :span="4">
-      <!-- :fetch-suggestions="querySearch" -->
-      <!-- @select="handleSelect" -->
         <el-autocomplete
           class="inline-input"
           v-model="chooseConfig"
@@ -50,22 +49,20 @@
           </el-input>
         </div>
       </el-col>
-      <el-button type="primary">I made it today</el-button>
+      <el-button type="primary" @click="getscheduleList">I made it today</el-button>
     </el-row>
 
     <el-row :gutter="24" class="con-bottom">
-      <el-col :span="11">
-        <ConfigNote></ConfigNote>
+      <el-col :span="11" class="animated bounceInLeft">
+        <ConfigNote @changeConfig="addConfig"></ConfigNote>
       </el-col>
-      <el-col :span="12">
-        <List></List>
+      <el-col :span="12" class="animated bounceInRight">
+        <List v-bind:configList="scheduleList"></List>
       </el-col>
     </el-row>
 
     <router-link to="/test" class="test">Go to Test</router-link>
   </div>
-
-
 
 </template>
 
@@ -108,34 +105,45 @@ export default {
       chooseConfig:'',
       address:'',
       textarea:'',
-      todayProgress:'100'
+      todayProgress:'100',
+      myconfig:'',
+      myconfigs:[],
+      scheduleList:[]
     }
   },
   methods:{
+    addConfig(addconfig){
+      this.myconfigs.push(addconfig);
+      // console.log(this.myconfigs);
+    },
     querySearch(queryString, cb) {
-      var myconfigs = this.myconfigs;
+        var myconfigs = this.myconfigs;
         var results = queryString ? myconfigs.filter(this.createFilter(queryString)) : myconfigs;
         // 调用 callback 返回建议列表的数据
         cb(results);
     },
     createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.indexOf(queryString.toLowerCase()) === 0);
+      return (myconfig) => {
+        return (myconfig.value.indexOf(queryString.toLowerCase()) === 0);
       };
     },
-    loadConfig(){
-      return [
-        { "value":"test1" },
-        { "value":"test2" },
-        { "value":"test3" }
-      ];
-    },
     handleSelect(item){
-      console.log(item);
+      this.myconfig = item.value
+      // console.log(item.value)
+    },
+    getscheduleList(){
+      this.scheduleList.push({
+        "time":this.happenTime,
+        "config":this.myconfig,
+        "address":this.address,
+        "content":this.textarea,
+        "progress":this.todayProgress
+      });
+      // localStorage.setItem("scheduleList",this.scheduleList);
+      // console.log(this.scheduleList)
     }
   },
   mounted() {
-    this.myconfigs = this.loadConfig();
   }
 }
 </script>
